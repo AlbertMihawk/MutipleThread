@@ -63,30 +63,31 @@ public class ProductStore {
         queue = new LinkedList<>();
         this.CAPACITY = capacity;
         this.stock = stock;
+        for (int i = 0; i < stock; i++) {
+            queue.add(new Product("库存零件"));
+        }
     }
 
     public void addProduct(Product p) {
-        addLock.lock();
-
+//        addLock.lock();
         if (stock == CAPACITY) {
             throw new RuntimeException("库存已满，不能入库");
         }
         stock++;
         queue.add(p);
-        System.out.println("入库：" + p.getName());
-        addLock.unlock();
+//        System.out.println("入库：" + p.getName());
+//        addLock.unlock();
     }
 
     public void removeProduct() {
-        removeLock.lock();
-
+//        removeLock.lock();
         if (stock == 0) {
             throw new RuntimeException("库存为空，不能出库");
         }
         stock--;
         Product p = queue.remove();
-        System.out.println("出库：" + p.getName());
-        removeLock.unlock();
+//        System.out.println("出库：" + p.getName());
+//        removeLock.unlock();
     }
 
     public int getStock() {
