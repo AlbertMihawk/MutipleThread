@@ -18,11 +18,19 @@ public class Consumer implements Level, Runnable {
     @Override
     public void run() {
         while (true) {
-            System.out.println("[ " + getConsumerName() + number + "号 开始出库 ]");
+//            System.out.println(" [" + getConsumerName() + number + "号 准备出库]");
             try {
                 Thread.sleep(this.duration);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            ProductStore ps = ProductStore.getInstance();
+            if (ps.isEmpty()) {
+                try {
+                    Producer.class.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             ProductStore.getInstance().removeProduct();
             System.out.println(" [" + getConsumerName() + number + "号 出库成功] ");

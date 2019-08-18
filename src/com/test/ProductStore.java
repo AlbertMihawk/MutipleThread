@@ -2,10 +2,13 @@ package com.test;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ProductStore {
 
     private static ProductStore productStore;
+
 
     public static ProductStore init(int capacity) {
         if (productStore == null) {
@@ -43,7 +46,10 @@ public class ProductStore {
 
     private Queue<Product> queue;
     private int stock;
-    private final int CAPACITY;
+    public final int CAPACITY;
+
+    private Lock addLock = new ReentrantLock();
+    private Lock removeLock = new ReentrantLock();
 
     private ProductStore(int capacity) {
         clearStore();
@@ -59,25 +65,43 @@ public class ProductStore {
         this.stock = stock;
     }
 
-    public synchronized void addProduct(Product p) {
+    public void addProduct(Product p) {
+        addLock.lock();
+
         if (stock == CAPACITY) {
             throw new RuntimeException("库存已满，不能入库");
         }
         stock++;
         queue.add(p);
         System.out.println("入库：" + p.getName());
+        addLock.unlock();
     }
 
-    public synchronized void removeProduct() {
+    public void removeProduct() {
+        removeLock.lock();
+
         if (stock == 0) {
             throw new RuntimeException("库存为空，不能出库");
         }
         stock--;
         Product p = queue.remove();
         System.out.println("出库：" + p.getName());
+        removeLock.unlock();
     }
 
     public int getStock() {
-        return stock;
+        return this.stock;
+    }
+
+    public int getCAPACITY() {
+        return this.CAPACITY;
+    }
+
+    public boolean isFull() {
+        return this.stock == this.CAPACITY;
+    }
+
+    public boolean isEmpty() {
+        return this.stock == 0;
     }
 }
