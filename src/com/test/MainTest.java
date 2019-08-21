@@ -82,19 +82,31 @@ public class MainTest {
         th3.start();
         th4.start();
         th5.start();
+
+
+        try {
+            th1.join();
+            th2.join();
+            th3.join();
+            th4.join();
+            th5.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(count);
     }
 
     private static void compute() {
-        synchronized (MainTest.class) {
-            for (int i = 0; i < 1005; i++) {
-                Random random = new Random();
+//        synchronized (MainTest.class) {
+            for (int i = 0; i < 10000; i++) {
+//                Random random = new Random();
 //                    int time = random.nextInt(1) * 300;
                 count++;
-                if (count == 5000) {
-                    System.out.println("经历时间：" + (System.currentTimeMillis() - startTime));
-                }
-                System.out.println(count);
-            }
+//            if (count == 50000) {
+//                System.out.println("经历时间：" + (System.currentTimeMillis() - startTime));
+//            }
+
+//            }
         }
     }
 
